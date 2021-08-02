@@ -1,0 +1,22 @@
+{
+  "name": "tg-email-notifier-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon",
+    "prod": "node index"
+  },
+  "keywords": [],
+  "author": "Art Ginzburg",
+  "license": "ISC",
+  "dependencies": {
+    "coordinate-parser": "^1.0.7",
+    "dotenv-extended": "^2.9.0",
+    "google-geocoder": "^0.2.1",
+    "mail-listener2-updated": "^0.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
