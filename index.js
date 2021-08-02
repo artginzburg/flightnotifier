@@ -1,5 +1,5 @@
 'use strict';
-require('dotenv-extended').load();
+require('dotenv-expand')({ parsed: require('dotenv-extended').load() });
 
 const MailListener = require('mail-listener2-updated');
 const geocoder = require('google-geocoder');
@@ -7,16 +7,22 @@ const geocoder = require('google-geocoder');
 const mailCallback = require('./functions/mailCallback');
 
 const bot = require('./bot');
+const { User } = require('./models');
 
-const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, G_API_KEY, BOT_ADMIN_ID } = process.env;
+const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, GOOGLE_API_KEY, BOT_OWNER_ID } =
+  process.env;
 
-function botCallback(htmlText) {
-  const user = BOT_ADMIN_ID;
-  return bot.telegram.sendMessage(user, htmlText, { parse_mode: 'HTML' });
+async function botCallback(htmlText) {
+  const users = await User.find({});
+  users.forEach((user) => {
+    if (user.isAdmin) {
+      bot.telegram.sendMessage(user, htmlText, { parse_mode: 'HTML' });
+    }
+  });
 }
 
 const geo = geocoder({
-  key: G_API_KEY,
+  key: GOOGLE_API_KEY,
 });
 
 const mailListener = new MailListener({

@@ -12,9 +12,11 @@
   "license": "MIT",
   "dependencies": {
     "coordinate-parser": "^1.0.7",
+    "dotenv-expand": "^5.1.0",
     "dotenv-extended": "^2.9.0",
     "google-geocoder": "^0.2.1",
     "mail-listener2-updated": "^0.3.3",
+    "mongoose": "^5.13.5",
     "telegraf": "^4.4.1"
   },
   "devDependencies": {
