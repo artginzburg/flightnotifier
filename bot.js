@@ -29,7 +29,19 @@ bot.on('text', (ctx) => {
     return;
   }
 
+  if (
+    ctx.message.entities &&
+    ctx.message.entities.some((entity) => entity.type === 'bot_command')
+  ) {
+    return;
+  }
+
   const layoutConverted = ru.toEn(ctx.message.text);
+
+  if (layoutConverted === ctx.message.text) {
+    return;
+  }
+
   // TODO: implement checking bot.telegram.getMyCommands() for including the converted layout text?
   // TODO: implement transliteration
   ctx.reply(`${layoutConverted}?`);
