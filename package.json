@@ -11,6 +11,7 @@
   "author": "Art Ginzburg <ginzburg.arthur@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "convert-layout": "^0.9.0",
     "coordinate-parser": "^1.0.7",
     "dotenv-expand": "^5.1.0",
     "dotenv-extended": "^2.9.0",

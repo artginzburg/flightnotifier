@@ -9,8 +9,7 @@ const mailCallback = require('./functions/mailCallback');
 const bot = require('./bot');
 const { User } = require('./models');
 
-const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, GOOGLE_API_KEY, BOT_OWNER_ID } =
-  process.env;
+const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, GOOGLE_API_KEY } = process.env;
 
 async function botCallback(htmlText) {
   const users = await User.find({});

@@ -1,4 +1,5 @@
 const { Telegraf } = require('telegraf');
+const ru = require('convert-layout/ru');
 
 const setupAdmin = require('./commands/setupAdmin');
 
@@ -23,12 +24,16 @@ bot.command(['start', 'help'], (ctx) => {
   );
 });
 
-// bot.on('text', (ctx) => {
-//   if (ctx.chat.type !== 'private') {
-//     return;
-//   }
+bot.on('text', (ctx) => {
+  if (ctx.chat.type !== 'private') {
+    return;
+  }
 
-// });
+  const layoutConverted = ru.toEn(ctx.message.text);
+  // TODO: implement checking bot.telegram.getMyCommands() for including the converted layout text?
+  // TODO: implement transliteration
+  ctx.reply(`${layoutConverted}?`);
+});
 
 bot.launch();
 
