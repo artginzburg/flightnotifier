@@ -42,9 +42,10 @@ mailListener.on('server:connected', () => {
   console.log('imapConnected');
 });
 
+let mailListenerRestartTimeout = null;
 mailListener.on('server:disconnected', () => {
   console.log('imapDisconnected');
-  setTimeout(() => {
+  mailListenerRestartTimeout = setTimeout(() => {
     console.log('Trying to establish imap connection again');
     mailListener.restart();
   }, 5 * 1000);
@@ -55,3 +56,6 @@ mailListener.on('error', (err) => {
 });
 
 mailListener.on('mail', mailCallback(botCallback, geo));
+
+process.once('SIGINT', () => clearTimeout(mailListenerRestartTimeout));
+process.once('SIGTERM', () => clearTimeout(mailListenerRestartTimeout));
