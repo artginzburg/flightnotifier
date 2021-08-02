@@ -25,35 +25,44 @@ bot.command(['start', 'help'], (ctx) => {
   );
 });
 
-bot.on('text', (ctx) => {
-  if (ctx.chat.type !== 'private') {
-    return;
+bot.on('text', (ctx, next) => {
+  // Terms:
+  // layout-converted message — (e.g. `рудз` => `help`)
+  // transliterated message — (e.g. `админ` => `admin`)
+  const { chat, message } = ctx;
+
+  if (chat.type !== 'private') {
+    // bypass if chat is not private
+    return next();
   }
 
-  if (
-    ctx.message.entities &&
-    ctx.message.entities.some((entity) => entity.type === 'bot_command')
-  ) {
-    return;
+  if (message.entities && message.entities.some((entity) => entity.type === 'bot_command')) {
+    // bypass if the message is syntactically valid as a command (Telegram's built-in validation)
+    return next();
   }
 
-  if (ctx.message.text[0] === '/') {
-    const translitConverted = cyrillicToTranslit.transform(ctx.message.text);
+  if (!['/', '.', '?', '÷'].includes(message.text[0])) {
+    // bypass if the message wasn't intended to be a command
+    return next();
+  }
+
+  if (message.text[0] === '/') {
+    const translitConverted = cyrillicToTranslit.transform(message.text);
+    // reply with transliterated message if the initial message was surely a command
     return ctx.reply(`${translitConverted}?`);
   }
 
-  const layoutConverted = ru.toEn(ctx.message.text);
+  // layout-convert the initial message
+  const layoutConverted = ru.toEn(message.text);
 
-  if (layoutConverted[0] !== '/') {
-    return;
+  if (layoutConverted === message.text) {
+    // bypass if layout-converted message equals the initial message
+    return next();
   }
 
-  if (layoutConverted === ctx.message.text) {
-    return;
-  }
-
-  // TODO: implement checking bot.telegram.getMyCommands() for including the converted layout text?
-  ctx.reply(`${layoutConverted}?`);
+  // reply with layout-converted message
+  return ctx.reply(`${layoutConverted}?`);
+  // TODO: implement checking bot.telegram.getMyCommands() for including the converted layout text. Should be turned on by default and controlled with the package constructor
 });
 
 bot.launch();
