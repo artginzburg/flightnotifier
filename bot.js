@@ -1,5 +1,6 @@
 const { Telegraf } = require('telegraf');
 const ru = require('convert-layout/ru');
+const cyrillicToTranslit = require('cyrillic-to-translit-js')();
 
 const setupAdmin = require('./commands/setupAdmin');
 
@@ -34,6 +35,11 @@ bot.on('text', (ctx) => {
     ctx.message.entities.some((entity) => entity.type === 'bot_command')
   ) {
     return;
+  }
+
+  if (ctx.message.text[0] === '/') {
+    const translitConverted = cyrillicToTranslit.transform(ctx.message.text);
+    return ctx.reply(`${translitConverted}?`);
   }
 
   const layoutConverted = ru.toEn(ctx.message.text);
