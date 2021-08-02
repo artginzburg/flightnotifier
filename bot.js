@@ -53,7 +53,6 @@ bot.on('text', (ctx) => {
   }
 
   // TODO: implement checking bot.telegram.getMyCommands() for including the converted layout text?
-  // TODO: implement transliteration
   ctx.reply(`${layoutConverted}?`);
 });
 
