@@ -44,6 +44,10 @@ bot.on('text', (ctx) => {
 
   const layoutConverted = ru.toEn(ctx.message.text);
 
+  if (layoutConverted[0] !== '/') {
+    return;
+  }
+
   if (layoutConverted === ctx.message.text) {
     return;
   }
