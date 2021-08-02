@@ -7,7 +7,7 @@ const defaults = {
   timeZone: 'Europe/Moscow',
 };
 
-module.exports = function mailCallback(geo) {
+module.exports = function mailCallback(botCallback, geo) {
   return (mail) => {
     const { headers, subject, text } = mail;
 
@@ -21,7 +21,7 @@ module.exports = function mailCallback(geo) {
     const flight = {};
 
     const subjectSplitted = subject.split(':');
-    flight.type = subjectSplitted.pop().trim();
+    flight.type = subjectSplitted.pop().trim().toLowerCase();
     flight.name = subjectSplitted.pop().trim();
 
     text.split('\n').forEach((element) => {
@@ -60,10 +60,15 @@ module.exports = function mailCallback(geo) {
     flight.custom.latitude = coordinates.latitude;
     flight.custom.longitude = coordinates.longitude;
 
+    flight.custom.latlng = `${flight.custom.latitude}, ${flight.custom.longitude}`;
+
     if (geo) {
-      geo.find(`${flight.custom.latitude} ${flight.custom.longitude}`, geoCallback(flight));
+      geo.find(flight.custom.latlng, geoCallback(flight, botCallback));
     } else {
       // Send notification without detailed geo info
+      botCallback(
+        `<b>${flight.name} ${flight.type}</b>\n\n${flight.custom.time} ${flight.custom.date}\n\n<code>${flight.custom.latlng}</code>\n`
+      );
     }
   };
 };

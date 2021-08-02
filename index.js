@@ -6,13 +6,20 @@ const geocoder = require('google-geocoder');
 
 const mailCallback = require('./functions/mailCallback');
 
-const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, G_API_KEY } = process.env;
+const bot = require('./bot');
+
+const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, G_API_KEY, BOT_ADMIN_ID } = process.env;
+
+function botCallback(htmlText) {
+  const user = BOT_ADMIN_ID;
+  return bot.telegram.sendMessage(user, htmlText, { parse_mode: 'HTML' });
+}
 
 const geo = geocoder({
   key: G_API_KEY,
 });
 
-var mailListener = new MailListener({
+const mailListener = new MailListener({
   username: MAIL_USERNAME,
   password: MAIL_PASSWORD,
   host: MAIL_HOST,
@@ -42,4 +49,4 @@ mailListener.on('error', (err) => {
   console.log(err);
 });
 
-mailListener.on('mail', mailCallback(geo));
+mailListener.on('mail', mailCallback(botCallback, geo));

@@ -7,14 +7,15 @@
     "start": "nodemon",
     "prod": "node index"
   },
-  "keywords": [],
-  "author": "Art Ginzburg",
-  "license": "ISC",
+  "repository": "https://github.com/artginzburg/tg-email-notifier-bot",
+  "author": "Art Ginzburg <ginzburg.arthur@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "coordinate-parser": "^1.0.7",
     "dotenv-extended": "^2.9.0",
     "google-geocoder": "^0.2.1",
-    "mail-listener2-updated": "^0.3.3"
+    "mail-listener2-updated": "^0.3.3",
+    "telegraf": "^4.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
