@@ -12,6 +12,11 @@ module.exports = function translayoutTypo(ctx, next) {
     return next();
   }
 
+  if (!message.text) {
+    // bypass if message doesn't contain text (e.g. it's a sticker or a document)
+    return next();
+  }
+
   if (message.entities && message.entities.some((entity) => entity.type === 'bot_command')) {
     // bypass if the message is syntactically valid as a command (Telegram's built-in validation)
     return next();
