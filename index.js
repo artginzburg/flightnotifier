@@ -15,7 +15,11 @@ async function botCallback(htmlText) {
   const users = await User.find({});
   users.forEach((user) => {
     if (user.startedUsing && user.isAdmin) {
-      bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' });
+      bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' }).catch((error) => {
+        if (!(error.response && error.response.error_code === 403)) {
+          throw error;
+        }
+      });
     }
   });
 }
