@@ -2,7 +2,7 @@ const { findUser } = require('../models');
 
 const checkAdmin = require('../helpers/checkAdmin');
 
-function setupAdmin(bot) {
+module.exports = function setupAdmin(bot) {
   bot.command('admin', checkAdmin, async (ctx) => {
     if (!ctx.message.reply_to_message) {
       return ctx.replyWithMarkdown(
@@ -30,6 +30,4 @@ function setupAdmin(bot) {
       }!`
     );
   });
-}
-
-module.exports = setupAdmin;
+};
