@@ -1,15 +1,13 @@
 'use strict';
 require('dotenv-expand')({ parsed: require('dotenv-extended').load() });
 
-const MailListener = require('mail-listener2-updated');
-const geocoder = require('google-geocoder');
-
 const mailCallback = require('./functions/mailCallback');
 
 const bot = require('./bot');
-const { User } = require('./models');
+const geo = require('./geo');
+const mailListener = require('./mailListener');
 
-const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, GOOGLE_API_KEY } = process.env;
+const { User } = require('./models');
 
 async function botCallback(htmlText) {
   const users = await User.find({});
@@ -24,19 +22,6 @@ async function botCallback(htmlText) {
     }
   });
 }
-
-const geo = geocoder({
-  key: GOOGLE_API_KEY,
-});
-
-const mailListener = new MailListener({
-  username: MAIL_USERNAME,
-  password: MAIL_PASSWORD,
-  host: MAIL_HOST,
-  port: MAIL_PORT,
-  tls: true,
-  tlsOptions: { rejectUnauthorized: false },
-});
 
 mailListener.start();
 
