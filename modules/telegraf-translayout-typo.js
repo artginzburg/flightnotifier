@@ -7,13 +7,13 @@ module.exports = function translayoutTypo(ctx, next) {
   // transliterated message — (e.g. `админ` => `admin`)
   const { chat, message } = ctx;
 
-  if (chat.type !== 'private') {
-    // bypass if chat is not private
+  if (!chat || chat.type !== 'private') {
+    // bypass if chat is not private or doesn't exist
     return next();
   }
 
-  if (!message.text) {
-    // bypass if message doesn't contain text (e.g. it's a sticker or a document)
+  if (!message || !message.text) {
+    // bypass if message doesn't exist or doesn't contain text (e.g. it's a sticker or a document)
     return next();
   }
 
