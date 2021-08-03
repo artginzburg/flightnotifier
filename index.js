@@ -14,8 +14,8 @@ const { MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, GOOGLE_API_KEY } = p
 async function botCallback(htmlText) {
   const users = await User.find({});
   users.forEach((user) => {
-    if (user.isAdmin) {
-      bot.telegram.sendMessage(user, htmlText, { parse_mode: 'HTML' });
+    if (user.startedUsing && user.isAdmin) {
+      bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' });
     }
   });
 }
@@ -42,10 +42,11 @@ mailListener.on('server:connected', () => {
   console.log('imapConnected');
 });
 
-let mailListenerRestartTimeout = null;
+// let mailListenerRestartTimeout = null;
 mailListener.on('server:disconnected', () => {
   console.log('imapDisconnected');
-  mailListenerRestartTimeout = setTimeout(() => {
+  // mailListenerRestartTimeout =
+  setTimeout(() => {
     console.log('Trying to establish imap connection again');
     mailListener.restart();
   }, 5 * 1000);
@@ -57,5 +58,10 @@ mailListener.on('error', (err) => {
 
 mailListener.on('mail', mailCallback(botCallback, geo));
 
-process.once('SIGINT', () => clearTimeout(mailListenerRestartTimeout));
-process.once('SIGTERM', () => clearTimeout(mailListenerRestartTimeout));
+// process.once('SIGINT', () => clearTimeout(mailListenerRestartTimeout));
+// process.once('SIGTERM', () => clearTimeout(mailListenerRestartTimeout));
+
+process.once('SIGINT', () => {
+  mailListener.stop();
+  process.exit();
+});
