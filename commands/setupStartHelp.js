@@ -4,7 +4,7 @@ const { findUser } = require('../models');
 
 module.exports = function setupStartHelp(bot) {
   bot.command(['start', 'help'], (ctx) => {
-    ctx.replyWithMarkdown(
+    ctx.reply(
       `Hi. I'm ${bot.botInfo.first_name} open-source bot from ${
         pkg.repository
       }. The following is my purpose: ${

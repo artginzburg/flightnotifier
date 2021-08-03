@@ -17,6 +17,7 @@ async function botCallback(htmlText) {
     if (user.startedUsing && user.isAdmin) {
       bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' }).catch((error) => {
         if (!(error.response && error.response.error_code === 403)) {
+          // bypass error if user hasn't started the bot yet or blocked it
           throw error;
         }
       });
@@ -35,35 +36,25 @@ const mailListener = new MailListener({
   port: MAIL_PORT,
   tls: true,
   tlsOptions: { rejectUnauthorized: false },
-  mailbox: 'INBOX',
-  markSeen: false,
-  // searchFilter: ["UNSEEN", "FLAGGED"],
 });
 
 mailListener.start();
 
 mailListener.on('server:connected', () => {
-  console.log('imapConnected');
+  console.log('IMAP account has connected');
 });
 
-// let mailListenerRestartTimeout = null;
 mailListener.on('server:disconnected', () => {
-  console.log('imapDisconnected');
-  // mailListenerRestartTimeout =
+  console.log('IMAP account has disconnected or server failed');
   setTimeout(() => {
-    console.log('Trying to establish imap connection again');
+    console.log('Trying to establish IMAP connection again');
     mailListener.restart();
   }, 5 * 1000);
 });
 
-mailListener.on('error', (err) => {
-  console.log(err);
-});
+mailListener.on('error', console.error);
 
 mailListener.on('mail', mailCallback(botCallback, geo));
-
-// process.once('SIGINT', () => clearTimeout(mailListenerRestartTimeout));
-// process.once('SIGTERM', () => clearTimeout(mailListenerRestartTimeout));
 
 process.once('SIGINT', () => {
   mailListener.stop();
