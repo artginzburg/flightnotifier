@@ -3,14 +3,8 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema(
   {
     _id: Number,
-    startedUsing: {
-      type: Boolean,
-      default: false,
-    },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
+    startedUsing: Boolean,
+    isAdmin: Boolean,
   },
   { versionKey: false }
 );
