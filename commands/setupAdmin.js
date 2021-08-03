@@ -2,6 +2,8 @@ const { findUser } = require('../models');
 
 const checkAdmin = require('../helpers/checkAdmin');
 
+const { BOT_OWNER_ID } = process.env;
+
 module.exports = function setupAdmin(bot) {
   bot.command('admin', checkAdmin, async (ctx) => {
     if (!ctx.message.reply_to_message) {
@@ -16,14 +18,15 @@ module.exports = function setupAdmin(bot) {
     }
     let user = await findUser(tgReceiver.id);
 
-    if (user._id === ctx.from.id) {
+    if (user._id === ctx.from.id && user._id !== Number(BOT_OWNER_ID)) {
+      // reply if user tries to /admin himself AND he is not the bot owner
       return ctx.reply('Интересная идея, но так не сработает.');
     }
     // Reverse isAdmin
     user.isAdmin = !user.isAdmin;
     // Save user
     user = await user.save();
-    // Send new setting
+    // Reply with new setting info
     await ctx.reply(
       `Теперь @${tgReceiver.username} ${
         user.isAdmin ? 'может мной управлять' : 'лишился админского доступа'
