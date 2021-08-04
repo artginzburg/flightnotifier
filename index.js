@@ -10,12 +10,12 @@ const mailListener = require('./mailListener');
 const { User } = require('./models');
 
 async function botCallback(htmlText) {
-  const users = await User.find({});
+  const users = await User.find({ startedUsing: true });
   users.forEach((user) => {
-    if (user.startedUsing && (user.isAdmin || user.isModer)) {
+    if (user.isAdmin || user.isModer) {
       bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' }).catch((error) => {
         if (!(error.response && error.response.error_code === 403)) {
-          // bypass error if user hasn't started the bot yet or blocked it
+          // swallow error if user hasn't started the bot yet or has blocked it, else rethrow
           throw error;
         }
       });
