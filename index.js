@@ -10,7 +10,7 @@ const mailListener = require('./mailListener');
 const { User } = require('./models');
 
 async function botCallback(htmlText) {
-  const users = await User.find({ startedUsing: true });
+  const users = await User.find({});
   users.forEach((user) => {
     if (user.isAdmin || user.isModer) {
       bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' }).catch((error) => {
