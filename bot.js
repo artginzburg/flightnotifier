@@ -2,9 +2,9 @@ const { Telegraf } = require('telegraf');
 
 const translayoutTypo = require('./modules/telegraf-translayout-typo');
 
-const setupAdmin = require('./commands/setupAdmin');
-const setupModer = require('./commands/setupModer');
-const setupStartHelp = require('./commands/setupStartHelp');
+const setupInvite = require('./commands/invite');
+const setupHelp = require('./commands/help');
+const setupRoles = require('./commands/roles');
 
 const { BOT_TOKEN } = process.env;
 
@@ -13,10 +13,9 @@ if (!BOT_TOKEN) {
 }
 const bot = new Telegraf(BOT_TOKEN);
 
-setupAdmin(bot);
-setupModer(bot);
-
-setupStartHelp(bot);
+setupInvite(bot);
+setupHelp(bot);
+setupRoles(bot);
 
 bot.use(translayoutTypo);
 
