@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
     _id: Number,
     startedUsing: Boolean,
     isAdmin: Boolean,
+    isModer: Boolean,
   },
   { versionKey: false }
 );

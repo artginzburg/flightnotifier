@@ -12,7 +12,7 @@ const { User } = require('./models');
 async function botCallback(htmlText) {
   const users = await User.find({});
   users.forEach((user) => {
-    if (user.startedUsing && user.isAdmin) {
+    if (user.startedUsing && (user.isAdmin || user.isModer)) {
       bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' }).catch((error) => {
         if (!(error.response && error.response.error_code === 403)) {
           // bypass error if user hasn't started the bot yet or blocked it
