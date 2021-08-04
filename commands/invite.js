@@ -6,8 +6,8 @@ const BOT_OWNER_ID = Number(process.env.BOT_OWNER_ID);
 module.exports = function setupInvite(bot) {
   bot.command('invite', checkRole(Roles.moder), async (ctx) => {
     if (!ctx.message.reply_to_message) {
-      return ctx.reply(
-        `Для отправки приглашения ответьте на сообщение пользователя или перешлите его мне — @${ctx.botInfo.username}`
+      return ctx.replyWithHTML(
+        `Для отправки приглашения ответьте на сообщение пользователя или перешлите его мне — @${ctx.botInfo.username}\n\nUsage: /invite role\n(<b>role</b> left empty implies the second lowest one from /roles)`
       );
     }
 
