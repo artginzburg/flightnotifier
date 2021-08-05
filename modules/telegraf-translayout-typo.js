@@ -1,5 +1,7 @@
 const ru = require('convert-layout/ru');
-const cyrillicToTranslit = require('cyrillic-to-translit-js')();
+// const cyrillicToTranslit = require('cyrillic-to-translit-js')();
+
+const validInitiators = ['/', '.', '?', '÷', '\\', '|', '«', '»'];
 
 module.exports = function translayoutTypo(ctx, next) {
   // Terms:
@@ -17,31 +19,35 @@ module.exports = function translayoutTypo(ctx, next) {
     return next();
   }
 
-  if (message.entities && message.entities.some((entity) => entity.type === 'bot_command')) {
-    // bypass if the message is syntactically valid as a command (Telegram's built-in validation)
-    return next();
-  }
+  // if (message.entities && message.entities.some((entity) => entity.type === 'bot_command')) {
+  //   // bypass if the message is syntactically valid as a command (Telegram's built-in validation)
+  //   return next();
+  // }
 
-  if (!['/', '.', '?', '÷'].includes(message.text[0])) {
+  const initSymbol = message.text[0];
+
+  if (!validInitiators.includes(initSymbol)) {
     // bypass if the message wasn't intended to be a command
     return next();
   }
 
-  if (message.text[0] === '/') {
-    const translitConverted = cyrillicToTranslit.transform(message.text);
-    // reply with transliterated message if the initial message was surely a command
-    return ctx.reply(`${translitConverted}?`);
-  }
+  const textWithoutInit = message.text.substring(1);
+
+  // if (initSymbol === '/') {
+  //   const translitConverted = cyrillicToTranslit.transform(message.text);
+  //   // reply with transliterated message if the initial message was surely a command
+  //   return ctx.reply(`${translitConverted}?`);
+  // }
 
   // layout-convert the initial message
-  const layoutConverted = ru.toEn(message.text);
+  const layoutConverted = ru.toEn(textWithoutInit);
 
-  if (layoutConverted === message.text) {
+  if (layoutConverted === textWithoutInit) {
     // bypass if layout-converted message equals the initial message
     return next();
   }
 
   // reply with layout-converted message
-  return ctx.reply(`${layoutConverted}?`);
+  return ctx.reply(`/${layoutConverted}?`);
   // TODO: implement checking bot.telegram.getMyCommands() for including the converted layout text. Should be turned on by default and controlled with the package constructor
 };
