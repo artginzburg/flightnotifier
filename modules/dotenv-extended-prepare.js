@@ -45,7 +45,11 @@ function envStringifyInit(envObj) {
   return string.trim();
 }
 
+const setAll = (obj, val) => Object.keys(obj).forEach((k) => (obj[k] = val));
+
 const envSchema = envParse(envSchemaPath);
+setAll(envSchema, '');
+
 const envDefaults = envParse(envDefaultsPath);
 
 const stringifiedEnv = envStringifyInit({ ...envSchema, ...envDefaults });
