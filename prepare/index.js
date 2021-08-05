@@ -1,1 +1,1 @@
-require('./env');
+require('../modules/dotenv-extended-prepare');
