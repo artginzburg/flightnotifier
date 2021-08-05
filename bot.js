@@ -2,7 +2,9 @@ const { Telegraf } = require('telegraf');
 
 const translayoutTypo = require('./modules/telegraf-translayout-typo');
 
-const setupInvite = require('./commands/invite');
+const setupForwarded = require('./middlewares/forwarded');
+
+const { setupInvite } = require('./commands/invite');
 const setupHelp = require('./commands/help');
 const setupRoles = require('./commands/roles');
 
@@ -12,6 +14,8 @@ if (!BOT_TOKEN) {
   throw new Error('BOT_TOKEN env variable must be provided!');
 }
 const bot = new Telegraf(BOT_TOKEN);
+
+setupForwarded(bot);
 
 setupInvite(bot);
 setupHelp(bot);
