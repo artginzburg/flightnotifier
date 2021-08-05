@@ -1,5 +1,11 @@
 'use strict';
-require('dotenv-expand')({ parsed: require('dotenv-extended').load() });
+require('dotenv-expand')({
+  parsed: require('dotenv-extended').load({
+    errorOnMissing: true,
+    errorOnExtra: true,
+    errorOnRegex: true,
+  }),
+});
 
 const mailCallback = require('./functions/mailCallback');
 
