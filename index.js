@@ -10,15 +10,14 @@ require('dotenv-expand')({
 const mailCallback = require('./functions/mailCallback');
 
 const bot = require('./bot');
-const geo = require('./geo');
 const mailListener = require('./mailListener');
 
-const { User } = require('./models');
+const { User, Roles } = require('./models');
 
 async function botCallback(htmlText) {
   const users = await User.find({});
   users.forEach((user) => {
-    if (user.isAdmin || user.isModer) {
+    if (user.role >= Roles.invitee) {
       bot.telegram.sendMessage(user._id, htmlText, { parse_mode: 'HTML' }).catch((error) => {
         if (!(error.response && error.response.error_code === 403)) {
           // swallow error if user hasn't started the bot yet or has blocked it, else rethrow
@@ -45,7 +44,7 @@ mailListener.on('server:disconnected', () => {
 
 mailListener.on('error', console.error);
 
-mailListener.on('mail', mailCallback(botCallback, geo));
+mailListener.on('mail', mailCallback(botCallback));
 
 process.once('SIGINT', () => {
   mailListener.stop();
