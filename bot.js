@@ -1,6 +1,5 @@
 const { Telegraf } = require('telegraf');
-
-const layoutfixer = require('./modules/telegraf-layoutfixer');
+const layoutfixer = require('telegraf-layoutfixer');
 
 const setupForwarded = require('./middlewares/forwarded');
 
@@ -21,8 +20,7 @@ setupInvite(bot);
 setupHelp(bot);
 setupRoles(bot);
 
-const fixLayout = layoutfixer();
-bot.use(fixLayout);
+bot.use(layoutfixer());
 
 bot.launch();
 
