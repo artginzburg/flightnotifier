@@ -1,6 +1,6 @@
 const { Telegraf } = require('telegraf');
 
-const translayoutTypo = require('./modules/telegraf-translayout-typo');
+const layoutfixer = require('./modules/telegraf-layoutfixer');
 
 const setupForwarded = require('./middlewares/forwarded');
 
@@ -21,8 +21,8 @@ setupInvite(bot);
 setupHelp(bot);
 setupRoles(bot);
 
-const antitypo = translayoutTypo();
-bot.use(antitypo);
+const fixLayout = layoutfixer();
+bot.use(fixLayout);
 
 bot.launch();
 

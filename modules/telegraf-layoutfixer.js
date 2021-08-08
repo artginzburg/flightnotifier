@@ -8,11 +8,11 @@ const defaultConfig = {
   commands: undefined,
 };
 
-module.exports = function generateTranslayoutTypo(config) {
+module.exports = function layoutfixer(config) {
   // generate new config object based on defaultConfig and override it with existing variables in the config passed as argument
   config = { ...defaultConfig, ...config };
 
-  return function translayoutTypo(ctx, next) {
+  return (ctx, next) => {
     // Terms:
     // layout-converted message — (e.g. `рудз` => `help`)
     // transliterated message — (e.g. `админ` => `admin`)
