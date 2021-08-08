@@ -1,5 +1,5 @@
 {
-  "name": "tg-email-notifier-bot",
+  "name": "flightnotifier",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "prod": "node index",
     "prepare": "node prepare"
   },
-  "repository": "https://github.com/artginzburg/tg-email-notifier-bot",
+  "repository": "https://github.com/artginzburg/flightnotifier",
   "author": "Art Ginzburg <ginzburg.arthur@gmail.com>",
   "license": "MIT",
   "dependencies": {
