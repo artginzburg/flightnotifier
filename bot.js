@@ -21,7 +21,8 @@ setupInvite(bot);
 setupHelp(bot);
 setupRoles(bot);
 
-bot.use(translayoutTypo);
+const antitypo = translayoutTypo();
+bot.use(antitypo);
 
 bot.launch();
 

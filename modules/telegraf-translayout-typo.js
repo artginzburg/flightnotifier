@@ -1,53 +1,83 @@
 const ru = require('convert-layout/ru');
 // const cyrillicToTranslit = require('cyrillic-to-translit-js')();
 
-const validInitiators = ['/', '.', '?', '÷', '\\', '|', '«', '»'];
+const defaultConfig = {
+  allowUnlistedCommands: false,
+  validator: /^\w+$/,
+  validInitiators: ['/', '.', '?', '÷', '\\', '|', '«', '»'],
+  commands: undefined,
+};
 
-module.exports = function translayoutTypo(ctx, next) {
-  // Terms:
-  // layout-converted message — (e.g. `рудз` => `help`)
-  // transliterated message — (e.g. `админ` => `admin`)
-  const { chat, message } = ctx;
+module.exports = function generateTranslayoutTypo(config) {
+  // generate new config object based on defaultConfig and override it with existing variables in the config passed as argument
+  config = { ...defaultConfig, ...config };
 
-  if (!chat || chat.type !== 'private') {
-    // bypass if chat is not private or doesn't exist
-    return next();
-  }
+  return function translayoutTypo(ctx, next) {
+    // Terms:
+    // layout-converted message — (e.g. `рудз` => `help`)
+    // transliterated message — (e.g. `админ` => `admin`)
+    const { chat, message, telegram } = ctx;
 
-  if (!message || !message.text) {
-    // bypass if message doesn't exist or doesn't contain text (e.g. it's a sticker or a document)
-    return next();
-  }
+    // Get bot commands and add to the variable
+    !config.commands &&
+      !config.allowUnlistedCommands &&
+      telegram.getMyCommands().then((data) => {
+        config.commands = data;
+      });
 
-  // if (message.entities && message.entities.some((entity) => entity.type === 'bot_command')) {
-  //   // bypass if the message is syntactically valid as a command (Telegram's built-in validation)
-  //   return next();
-  // }
+    if (!chat || chat.type !== 'private') {
+      // bypass if chat is not private or doesn't exist
+      return next();
+    }
 
-  const initSymbol = message.text[0];
+    if (!message || !message.text) {
+      // bypass if message doesn't exist or doesn't contain text (e.g. it's a sticker or a document)
+      return next();
+    }
 
-  if (!validInitiators.includes(initSymbol)) {
-    // bypass if the message wasn't intended to be a command
-    return next();
-  }
+    // if (message.entities && message.entities.some((entity) => entity.type === 'bot_command')) {
+    //   // bypass if the message is syntactically valid as a command (Telegram's built-in validation)
+    //   return next();
+    // }
 
-  const textWithoutInit = message.text.substring(1);
+    const initSymbol = message.text[0];
 
-  // if (initSymbol === '/') {
-  //   const translitConverted = cyrillicToTranslit.transform(message.text);
-  //   // reply with transliterated message if the initial message was surely a command
-  //   return ctx.reply(`${translitConverted}?`);
-  // }
+    if (!config.validInitiators.includes(initSymbol)) {
+      // bypass if the message wasn't intended to be a command
+      return next();
+    }
 
-  // layout-convert the initial message
-  const layoutConverted = ru.toEn(textWithoutInit);
+    const textWithoutInit = message.text.substring(1);
 
-  if (layoutConverted === textWithoutInit) {
-    // bypass if layout-converted message equals the initial message
-    return next();
-  }
+    // if (initSymbol === '/') {
+    //   const translitConverted = cyrillicToTranslit.transform(message.text);
+    //   // reply with transliterated message if the initial message was surely a command
+    //   return ctx.reply(`${translitConverted}?`);
+    // }
 
-  // reply with layout-converted message
-  return ctx.reply(`/${layoutConverted}?`);
-  // TODO: implement checking bot.telegram.getMyCommands() for including the converted layout text. Should be turned on by default and controlled with the package constructor
+    // layout-convert the initial message
+    const layoutConverted = ru.toEn(textWithoutInit);
+
+    if (layoutConverted === textWithoutInit) {
+      // bypass if layout-converted message equals the initial message
+      return next();
+    }
+
+    if (!config.validator.test(layoutConverted)) {
+      // bypass if layout-converted message is not valid
+      return next();
+    }
+
+    if (config.commands && !config.allowUnlistedCommands) {
+      const commandIsListed = config.commands.some((obj) => obj.command.includes(layoutConverted));
+      if (!commandIsListed) {
+        // bypass if unlisted commands are not allowed, commands exist, and the command in message is listed
+        // doesn't work on the first call because ctx.telegram.getMyCommands() is async
+        return next();
+      }
+    }
+
+    // reply with layout-converted message
+    return ctx.reply(`/${layoutConverted}?`);
+  };
 };
