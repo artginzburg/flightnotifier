@@ -23,7 +23,7 @@
     "telegraf-stateless-question": "^2.0.1"
   },
   "devDependencies": {
-    "dotenv-extended-prepare": "^1.0.5",
+    "dotenv-extended-prepare": "^1.0.8",
     "nodemon": "^2.0.12"
   }
 }
