@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "prod": "node index",
-    "prepare": "dotenv-extended-prepare"
+    "postinstall": "dotenv-extended-prepare"
   },
   "repository": "https://github.com/artginzburg/flightnotifier",
   "author": "Art Ginzburg <ginzburg.arthur@gmail.com>",
