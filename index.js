@@ -28,6 +28,16 @@ async function botCallback(htmlText) {
   });
 }
 
+function setRestartTimeout() {
+  const timeoutS = 5;
+  const timeoutMs = timeoutS * 1000;
+  console.log(`Mail Listener restart scheduled in ${timeoutS} seconds`);
+  return setTimeout(() => {
+    console.log('Trying to establish IMAP connection again');
+    mailListener.restart();
+  }, timeoutMs);
+}
+
 mailListener.start();
 
 mailListener.on('server:connected', () => {
@@ -36,13 +46,15 @@ mailListener.on('server:connected', () => {
 
 mailListener.on('server:disconnected', () => {
   console.log('IMAP account has disconnected or server failed');
-  setTimeout(() => {
-    console.log('Trying to establish IMAP connection again');
-    mailListener.restart();
-  }, 5 * 1000);
+  setRestartTimeout();
 });
 
-mailListener.on('error', console.error);
+mailListener.on('error', (err) => {
+  if (err.code === 'ENOTFOUND') {
+    return console.log('No Internet connection!');
+  }
+  console.error(err);
+});
 
 mailListener.on('mail', mailCallback(botCallback));
 
