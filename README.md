@@ -2,7 +2,7 @@
 
 1. Clone this repo:
 ```powershell
-git clone https://github.com/artginzburg/tg-email-notifier-bot
+git clone https://github.com/artginzburg/flightnotifier
 ```
 2. Launch the [mongo database](https://www.mongodb.com/) locally
 3. Run `npm i` in the root folder
