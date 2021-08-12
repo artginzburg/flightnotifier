@@ -19,6 +19,7 @@
     "mongoose": "^5.13.5",
     "node-geocoder": "^3.27.0",
     "telegraf": "^4.4.1",
+    "telegraf-ignore-old-messages": "^1.0.0",
     "telegraf-layoutfixer": "^1.0.1",
     "telegraf-stateless-question": "^2.0.1"
   },
