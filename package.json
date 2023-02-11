@@ -25,6 +25,6 @@
   },
   "devDependencies": {
     "dotenv-extended-prepare": "^1.0.8",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.20"
   }
 }
